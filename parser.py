@@ -13,7 +13,7 @@ def parseAddition(input):
     pos=len(input)-1
     while pos>=0:
         if input[pos]["type"] == "ADD":
-            add=Node("Add","","+")
+            add=Node("Add","")
             add.add_child(parser(input[0:pos]))
             add.add_child(parser(input[pos+1:]))
             return(add)
@@ -24,14 +24,15 @@ def parseNumber(input):
     pos=0
     while pos<len(input):
         if input[pos]["type"] == "NUMBER":
-            number=Node("Number",input[pos]["value"],input[pos]["value"])
+            number=Node("Number",input[pos]["value"])
             return(number)
         pos+=1
             
 
 
-#tokens=tokenizer("16 + 25+13+ 50")
+tokens=tokenizer("2+3+5")
 #print(tokens)
-#parsed=parser(tokens)
-#parsed.show()
+parsed=parser(tokens)
+parsed.show()
+print(parsed.render())
 #print(parsed.evaluate())

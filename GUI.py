@@ -24,21 +24,8 @@ class MathWidget(QWidget): #My GUI interface. It renders a tree, and has selecte
         self.drawNode(painter, self.tree,50,50)
 
     def drawNode(self,painter,node,x,y):
-        print(node.kind, x, y, node.width())
-
-        if node == self.selected_node:
-            print("drawing selected:", node.kind, node.value)
-    
-            painter.drawRect(x-2,y-10, node.width()+4,12)
-        
-        if node.kind =="Add":
-            self.drawNode(painter,node.children[0],x,y)
-            self.node_positions.append((node, x+node.children[0].width(), y))
-            painter.drawText(x+node.children[0].width(),y,node.display)
-            self.drawNode(painter,node.children[1],x+node.children[0].width()+7,y)
-            return
-
-        painter.drawText(x,y,node.display)
+        print(node.kind, x, y)
+        painter.drawText(x,y,node.render())
         self.node_positions.append((node,x,y))
 
     def mousePressEvent(self, event):
