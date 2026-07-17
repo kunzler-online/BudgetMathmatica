@@ -3,7 +3,6 @@ class Node:
         self.kind=kind
         if self.kind=="Number":
             self.value=int(value)
-            self.display=str(value)
         elif self.kind=="Add":
             self.value=""
             self.display="+"
@@ -20,20 +19,28 @@ class Node:
             return int(self.value)
         if self.kind == "Add":
             return self.children[0].evaluate() + self.children[1].evaluate()
-    def render(self):
+    def render(self,painter,x,y,node_positions):
+        metrics = painter.fontMetrics()
         if self.kind=="Number":
-            return self.display
+            self.display=str(self.value)
+            self.xpos=x
+            self.ypos=y
+            self.width= metrics.horizontalAdvance(self.display)
+            self.height = metrics.height()
+            painter.drawText(self.xpos,self.ypos, self.display)
+            node_positions.append((self,self.xpos,self.ypos,self.width,self.height)) #This node position thing needs worked on code works if this is commented out
+            return
         if self.kind =="Add":
-            return self.children[0].render()+self.display+self.children[1].render()
-
-
-
-
-    def width(self):
-        if self.kind=="Number":
-            return len(self.value)*7
-        if self.kind=="Add":
-            return self.children[0].width() +7+ self.children[1].width()
+            self.display="+"
+            self.children[0].render(painter,x,y,node_positions)
+            self.xpos=x+self.children[0].width
+            self.ypos=y
+            self.width= metrics.horizontalAdvance(self.display)
+            self.height=metrics.height()
+            painter.drawText(self.xpos,self.ypos, self.display)
+            node_positions.append((self,self.xpos,self.ypos,self.width,self.height)) # This node position thing needs worked on
+            self.children[1].render(painter,self.xpos+self.width,y,node_positions)
+            return
 
 #root=Node("Add","")
 #x_node=Node("Number","5")

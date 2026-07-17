@@ -21,18 +21,16 @@ class MathWidget(QWidget): #My GUI interface. It renders a tree, and has selecte
         painter=QPainter(self)
         if self.tree is None:
             return
-        self.drawNode(painter, self.tree,50,50)
+        self.tree.render(painter,50,50,self.node_positions)
+        if self.selected_node !=None:
+            painter.drawRect(self.selected_node.xpos,self.selected_node.ypos+3,self.selected_node.width,-self.selected_node.height)
 
-    def drawNode(self,painter,node,x,y):
-        print(node.kind, x, y)
-        painter.drawText(x,y,node.render())
-        self.node_positions.append((node,x,y))
 
     def mousePressEvent(self, event):
         x=event.position().x()
         y=event.position().y()
-        for node, nx,ny in reversed(self.node_positions):
-            if abs(x-nx) < 10 and abs(y-ny) < 10:
+        for node, nx,ny,xwidth,ywidth in reversed(self.node_positions):
+            if nx<=x<=nx+xwidth and ny-ywidth<=y<=ny:
                 print("clicked:", node.kind, node.value)
                 self.selected_node = node
                 self.update()
@@ -58,13 +56,13 @@ class MathWidget(QWidget): #My GUI interface. It renders a tree, and has selecte
         elif key == "+":
             self.input_text+= key
         elif code == Qt.Key_Backspace:
-            self.text = self.text[:-1]
+            self.selected_node.value = ""
         
         print(self.input_text)
         self.update()
         
 
-tokens = tokenizer("0+0")
+tokens = tokenizer("11+22")
 tree = parser(tokens)
 
 

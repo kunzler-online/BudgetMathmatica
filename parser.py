@@ -30,9 +30,9 @@ def parseNumber(input):
             
 
 
-tokens=tokenizer("2+3+5")
+#tokens=tokenizer("2+3+5")
 #print(tokens)
-parsed=parser(tokens)
-parsed.show()
-print(parsed.render())
+#parsed=parser(tokens)
+#parsed.show()
+#print(parsed.render())
 #print(parsed.evaluate())
