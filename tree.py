@@ -4,7 +4,7 @@ class Node:
         if self.kind=="Number":
             self.value=int(value)
         elif self.kind=="Add":
-            self.value=""
+            self.value="+"
             self.display="+"
         self.children = []
     def add_child(self, child):
@@ -19,10 +19,15 @@ class Node:
             return int(self.value)
         if self.kind == "Add":
             return self.children[0].evaluate() + self.children[1].evaluate()
-    def render(self,painter,x,y,node_positions):
+    def render(self,painter,x,y,node_positions,selected_node, edittext):
         metrics = painter.fontMetrics()
+        
         if self.kind=="Number":
-            self.display=str(self.value)
+
+            if self==selected_node:
+                self.display=edittext
+            else:
+                self.display=str(self.value)
             self.xpos=x
             self.ypos=y
             self.width= metrics.horizontalAdvance(self.display)
@@ -31,16 +36,19 @@ class Node:
             node_positions.append((self,self.xpos,self.ypos,self.width,self.height)) #This node position thing needs worked on code works if this is commented out
             return
         if self.kind =="Add":
-            self.display="+"
-            self.children[0].render(painter,x,y,node_positions)
+            if self==selected_node: # Dont draw the selected node
+                self.display=edittext
+            else:
+                self.display=str(self.value)
+            self.children[0].render(painter,x,y,node_positions,selected_node,edittext)
             self.xpos=x+self.children[0].width
             self.ypos=y
             self.width= metrics.horizontalAdvance(self.display)
             self.height=metrics.height()
-            painter.drawText(self.xpos,self.ypos, self.display)
             node_positions.append((self,self.xpos,self.ypos,self.width,self.height)) # This node position thing needs worked on
-            self.children[1].render(painter,self.xpos+self.width,y,node_positions)
-            return
+            self.children[1].render(painter,self.xpos+self.width,y,node_positions,selected_node, edittext)
+         
+            painter.drawText(self.xpos,self.ypos, self.display)
 
 #root=Node("Add","")
 #x_node=Node("Number","5")

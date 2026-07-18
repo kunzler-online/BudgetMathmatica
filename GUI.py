@@ -15,15 +15,17 @@ class MathWidget(QWidget): #My GUI interface. It renders a tree, and has selecte
         self.input_text =""
         self.node_positions=[]
         self.selected_node= None
+        self.selected_edit_text= None
 
     def paintEvent(self,event): #resets node positions each time, and calls recursive drawnode function
         self.node_positions=[]
         painter=QPainter(self)
+        
         if self.tree is None:
             return
-        self.tree.render(painter,50,50,self.node_positions)
+        self.tree.render(painter,50,50,self.node_positions, self.selected_node,self.selected_edit_text)
         if self.selected_node !=None:
-            painter.drawRect(self.selected_node.xpos,self.selected_node.ypos+3,self.selected_node.width,-self.selected_node.height)
+            painter.drawRect(self.selected_node.xpos,self.selected_node.ypos+3, painter.fontMetrics().horizontalAdvance(self.selected_edit_text),-self.selected_node.height)
 
 
     def mousePressEvent(self, event):
@@ -33,8 +35,10 @@ class MathWidget(QWidget): #My GUI interface. It renders a tree, and has selecte
             if nx<=x<=nx+xwidth and ny-ywidth<=y<=ny:
                 print("clicked:", node.kind, node.value)
                 self.selected_node = node
+                self.selected_edit_text= str(self.selected_node.value) #This var allows for text edits seperate from nodes
                 self.update()
                 return
+            
         
 
     def keyPressEvent(self, event):
@@ -47,8 +51,7 @@ class MathWidget(QWidget): #My GUI interface. It renders a tree, and has selecte
         if self.selected_node is not None:
             if self.selected_node.kind == "Number":
                 if key.isdigit():
-                    self.selected_node.value = key
-                    self.selected_node.display= key
+                    self.selected_edit_text+=str(key)
                     self.update()
                     return
         if key.isdigit():
@@ -56,7 +59,7 @@ class MathWidget(QWidget): #My GUI interface. It renders a tree, and has selecte
         elif key == "+":
             self.input_text+= key
         elif code == Qt.Key_Backspace:
-            self.selected_node.value = ""
+            self.selected_edit_text=self.selected_edit_text[:-1]
         
         print(self.input_text)
         self.update()

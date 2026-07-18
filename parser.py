@@ -13,7 +13,7 @@ def parseAddition(input):
     pos=len(input)-1
     while pos>=0:
         if input[pos]["type"] == "ADD":
-            add=Node("Add","")
+            add=Node("Add","+")
             add.add_child(parser(input[0:pos]))
             add.add_child(parser(input[pos+1:]))
             return(add)
